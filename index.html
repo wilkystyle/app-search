@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>iTunes App Search</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+  <input
+    type="text"
+    id="search"
+    placeholder="Search for an app..."
+  />
+  <button id="go">Search</button>
+
+  <ul id="results"></ul>
+
+  <script>
+    $("#go").on("click", function () {
+      const query = $("#search").val().trim();
+      if (!query) return;
+
+      const encoded = encodeURIComponent(query);
+
+      $.ajax({
+        url: "https://itunes.apple.com/search",
+        dataType: "jsonp",
+        data: {
+          term: encoded,
+          entity: "software"
+        },
+        success: function (data) {
+          $("#results").empty();
+
+          data.results.forEach(app => {
+            $("#results").append(
+              `<li>
+                <strong>${app.trackName}</strong><br>
+                ${app.sellerName}
+              </li>`
+            );
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
